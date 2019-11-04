@@ -465,3 +465,124 @@ predictions = classifier.predict(input_fn=predict_input_fn)
 
 
 
+
+
+
+
+### Is There a Standard Heuristic for Model Tuning?
+
+This is a commonly asked question. The short answer is that the effects of different hyperparameters are data dependent. So there are no hard-and-fast rules; you'll need to test on your data.
+
+That said, here are a few rules of thumb that may help guide you:
+
+- Training error should steadily decrease, steeply at first, and should eventually plateau as training converges.
+- If the training has not converged, try running it for longer.
+- If the training error decreases too slowly, increasing the learning rate may help it decrease faster.
+  - But sometimes the exact opposite may happen if the learning rate is too high.
+- If the training error varies wildly, try decreasing the learning rate.
+  - Lower learning rate plus larger number of steps or larger batch size is often a good combination.
+- Very small batch sizes can also cause instability. First try larger values like 100 or 1000, and decrease until you see degradation.
+
+Again, never go strictly by these rules of thumb, because the effects are data dependent. Always experiment and verify.
+
+
+
+
+
+## Common hyperparameters in Machine Learning Crash Course exercises
+
+Many of the coding exercises contain the following hyperparameters:
+
+- **steps**, which is the total number of training iterations. One step calculates the loss from *one batch* and uses that value to modify the model's weights *once*.
+- **batch size**, which is the number of examples (chosen at random) for a single step. For example, the batch size for SGD is 1.
+
+The following formula applies:
+
+
+
+$total   number  of trained examples=batchsize∗steps$
+
+
+
+## A convenience variable in Machine Learning Crash Course exercises
+
+The following convenience variable appears in several exercises:
+
+- **periods**, which controls the granularity of reporting. For example, if `periods` is set to 7 and `steps` is set to 70, then the exercise will output the loss value every 10 steps (or 7 times). Unlike hyperparameters, we don't expect you to modify the value of `periods`. Note that modifying `periods` does not alter what your model learns.
+
+The following formula applies:
+
+
+
+$numberoftrainingexamplesineachperiod=batchsize∗stepsperiods$
+
+
+
+
+
+
+
+# Generalization
+
+
+
+**Generalization** refers to your model's ability to adapt properly to new, previously unseen data, drawn from the same distribution as the one used to create the model.
+
+
+
+
+
+## The Big Picture
+
+![Cycle of model, prediction, sample, discovering true distribution, more sampling](https://developers.google.com/machine-learning/crash-course/images/BigPicture.svg)
+
+
+
+- Goal: predict well on new data drawn from (hidden) true distribution.
+
+- Problem: we don't see the truth.
+
+- - We only get to sample from it.
+
+- If model h fits our current sample well, how can we trust it will predict well on other new samples?
+
+
+
+
+
+## How Do We Know If Our Model Is Good?
+
+- Theoretically:
+
+- - Interesting field: generalization theory
+  - Based on ideas of measuring model simplicity / complexity
+
+- Intuition: formalization of Ockham's Razor principle
+
+- - The less complex a model is, the more likely that a good empirical result is not just due to the peculiarities of our sample
+
+Empirically:
+
+- Asking: will our model do well on a new sample of data?
+
+- Evaluate: get a new sample of data-call it the test set
+
+- Good performance on the test set is a useful indicator of good performance on the new data in general:
+
+- - If the test set is large enough
+  - If we don't cheat by using the test set over and over
+
+- 
+
+## The ML Fine Print
+
+Three basic assumptions in all of the above:
+
+1. We draw examples **independently and identically (i.i.d.)** at random from the distribution
+2. The distribution is **stationary**: It doesn't change over time
+3. We always pull from the **same distribution**: Including training, validation, and test sets
+
+
+
+
+
